@@ -1,0 +1,115 @@
+%% Exercise 1: Image Processing Tasks
+% Read the image
+originalImage = imread('cameraman.tif');
+
+% Convert to double for processing
+originalImage = im2double(originalImage);
+
+% (b) Apply Image Negative
+imageNegative = 1 - originalImage;
+
+% (c) Apply Logarithmic Transformation
+c = 1; % scaling constant
+logImage = c * log(1 + originalImage);
+
+% (d) Apply Power-law Transformation
+gamma = 2.0; % example gamma value
+powerLawImage = originalImage.^gamma;
+
+% (e) Apply Contrast Stretching
+minValue = min(originalImage(:));
+maxValue = max(originalImage(:));
+contrastStretchedImage = (originalImage - minValue) / (maxValue - minValue);
+
+% (f) Subtract and Scale
+subtractedImage = contrastStretchedImage - originalImage;
+scaledImage = mat2gray(subtractedImage); % scale to [0, 1]
+
+% Display results
+figure;
+subplot(2, 3, 1), imshow(originalImage), title('Original Image');
+subplot(2, 3, 2), imshow(imageNegative), title('Image Negative');
+subplot(2, 3, 3), imshow(logImage), title('Log Transformation');
+subplot(2, 3, 4), imshow(powerLawImage), title('Power-law Transformation');
+subplot(2, 3, 5), imshow(contrastStretchedImage), title('Contrast Stretching');
+subplot(2, 3, 6), imshow(scaledImage), title('Subtracted and Scaled');
+
+%% Exercise 2: Gray-level Slicing and Histogram Equalization
+% Read the image
+inputImage = imread('rice.png');
+
+% Convert to grayscale if needed
+if size(inputImage, 3) == 3
+    inputImage = rgb2gray(inputImage);
+end
+
+% Convert to double for processing
+inputImage = im2double(inputImage);
+
+% (a) Gray-level Slicing
+A = 50 / 255; % normalized range [0, 1]
+B = 100 / 255;
+value = 200 / 255;
+
+% Approach 1: Keep the range [A, B], set others to 0
+graySlice1 = inputImage;
+graySlice1(inputImage < A | inputImage > B) = 0;
+
+graySlice2 = inputImage;
+graySlice2(inputImage >= A & inputImage <= B) = value;
+
+graySliceFinal = graySlice1 + graySlice2;
+
+% (b) Histogram Equalization
+equalizedImage = histeq(im2uint8(inputImage));
+
+% Display results
+figure;
+subplot(2, 4, 1), imshow(inputImage), title('Original Image');
+subplot(2, 4, 2), imhist(im2uint8(inputImage)), title('Original Histogram');
+subplot(2, 4, 3), imshow(graySliceFinal), title('Gray-level Sliced');
+subplot(2, 4, 4), imhist(im2uint8(graySliceFinal)), title('Sliced Histogram');
+subplot(2, 4, 5), imshow(equalizedImage), title('Histogram Equalized');
+subplot(2, 4, 6), imhist(equalizedImage), title('Equalized Histogram');
+
+%% Exercise 3: Noise Addition and Filtering
+% Read the image
+inputImage = imread('rice.png');
+
+% Convert to grayscale if needed
+if size(inputImage, 3) == 3
+    inputImage = rgb2gray(inputImage);
+end
+
+% Convert to double for processing
+inputImage = im2double(inputImage);
+
+% (A) Add Noise
+noisyImage = imnoise(inputImage, 'salt & pepper', 0.02);
+
+% (B) Apply Averaging Using Standard 3x3 Mask
+avgFilter = fspecial('average', [3, 3]);
+avgImage3x3 = imfilter(noisyImage, avgFilter, 'replicate');
+
+% (C) Apply Averaging Using Standard 15x15 Mask
+avgFilter15x15 = fspecial('average', [15, 15]);
+avgImage15x15 = imfilter(noisyImage, avgFilter15x15, 'replicate');
+
+% (D) Apply Averaging Using Weighted 3x3 Mask
+weightedMask = [1 2 1; 2 4 2; 1 2 1] / 16;
+weightedImage3x3 = imfilter(noisyImage, weightedMask, 'replicate');
+
+% (E) Apply Convolution with Weighted Mask
+weightedImageConv = conv2(noisyImage, weightedMask, 'same');
+
+% (F) Apply Median Filter
+medianImage = medfilt2(noisyImage, [3, 3]);
+
+% Display results
+figure;
+subplot(2, 3, 1), imshow(noisyImage), title('Noisy Image');
+subplot(2, 3, 2), imshow(avgImage3x3), title('3x3 Avg Filter');
+subplot(2, 3, 3), imshow(avgImage15x15), title('15x15 Avg Filter');
+subplot(2, 3, 4), imshow(weightedImage3x3), title('3x3 Weighted Avg');
+subplot(2, 3, 5), imshow(weightedImageConv), title('3x3 Weighted Conv');
+subplot(2, 3, 6), imshow(medianImage), title('Median Filter');
