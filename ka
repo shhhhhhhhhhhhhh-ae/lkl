@@ -113,3 +113,7 @@ subplot(2, 3, 3), imshow(avgImage15x15), title('15x15 Avg Filter');
 subplot(2, 3, 4), imshow(weightedImage3x3), title('3x3 Weighted Avg');
 subplot(2, 3, 5), imshow(weightedImageConv), title('3x3 Weighted Conv');
 subplot(2, 3, 6), imshow(medianImage), title('Median Filter');
+
+https://github.com/Xeraoo/digital_image_processing_matlab/blob/main/README.md
+https://github.com/Datriks/Matlab_image_processing
+https://github.com/shhhhhhhhhhhhhh-ae/lkl/tree/main
